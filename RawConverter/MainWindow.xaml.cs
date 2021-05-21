@@ -28,13 +28,24 @@ namespace RawConverter
         public MainWindow()
         {
             InitializeComponent();
-
             ResizeMenuColum(width: defaultMenuWidth);
+            SetAppInfo();
+
+            // function to set app info
+            void SetAppInfo()
+            {
+                TextBlockInfo.Text = AboutThisApp.name + " V" + AboutThisApp.version + Environment.NewLine + "Bulid date: " + AboutThisApp.builtDate; 
+            }
         }
 
-
+        /// <summary>
+        /// Method to resize the menu column. Elements will be set to visible/invisible while changing the column width.
+        /// </summary>
+        /// <param name="width"></param>
         private void ResizeMenuColum(int width)
         {
+            // function to toffle the visibility of all menu controls
+            // expanders wille be collapsed
             void ToggleMenuWidgets(bool state)
             {
                 // initilite variables for this method
@@ -58,7 +69,7 @@ namespace RawConverter
                     control.IsExpanded = false;
                 }
                 ButtonMoreInfo.Visibility = visibilityState;
-                LabelInfo.Visibility = visibilityState;
+                TextBlockInfo.Visibility = visibilityState;
             }
 
             // toggle elements
@@ -69,6 +80,11 @@ namespace RawConverter
             ColumnMenu.Width = newWidth;
         }
 
+        /// <summary>
+        /// Event to trigger the Menu resize when the menu button is clicked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonMenu_Click(object sender, RoutedEventArgs e)
         {
             // set the menuVisible variabel and resize the menu
@@ -82,8 +98,6 @@ namespace RawConverter
                 menuVisible = true;
                 ResizeMenuColum(width: expandedMenuWidth);
             }
-
-
         }
     }
 }
