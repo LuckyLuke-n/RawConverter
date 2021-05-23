@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-//using System.Windows.Forms;
 using System.Windows.Controls;
 
 namespace RawConverter
@@ -71,6 +70,23 @@ namespace RawConverter
         }
 
         /// <summary>
+        /// Method to refresh the data grid with all selected files
+        /// </summary>
+        private void RefreshDataGrid()
+        {
+            // set source
+            DataGridFiles.ItemsSource = RawFileReader.dataTableFiles.DefaultView;
+
+            // set column widths
+            DataGridLength[] columnWidths = { new DataGridLength(3, DataGridLengthUnitType.Star), new DataGridLength(1, DataGridLengthUnitType.Auto), new DataGridLength(1, DataGridLengthUnitType.Auto) };
+            int counter = 0;
+            foreach (DataGridColumn column in DataGridFiles.Columns)
+            {
+                column.Width = columnWidths[counter];
+            }       
+        }
+
+        /// <summary>
         /// Event to trigger the Menu resize when the menu button is clicked.
         /// </summary>
         /// <param name="sender"></param>
@@ -90,9 +106,27 @@ namespace RawConverter
             }
         }
 
+        /// <summary>
+        /// Event to trigger the files selection dialog.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonAddPictures_Click(object sender, RoutedEventArgs e)
         {
-            //FolderBrowserDialog n = new();
+            // get the array of file names and insert into the RawFileReader class
+            using (System.Windows.Forms.OpenFileDialog openFileDialog = new())
+            {
+                openFileDialog.Filter = RawFileReader.FilterString;
+                openFileDialog.Multiselect = true;
+                System.Windows.Forms.DialogResult result = openFileDialog.ShowDialog();
+                // add files
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    // set input files property in RawFileReader class
+                    RawFileReader.AddFiles(openFileDialog.FileNames);
+                    RefreshDataGrid();
+                }
+            }
         }
     }
 }

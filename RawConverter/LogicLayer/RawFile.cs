@@ -13,7 +13,9 @@ namespace RawConverter
     class RawFile
     {
         // properties
-        public FileInfo FileInfo { get; }
+        public string Name { get; }
+        public DateTime CreationTime { get; }
+        public float FileSize { get; }
         public static string OutputFolder { get; set; }
 
         // variables
@@ -27,7 +29,9 @@ namespace RawConverter
         {
             this.path = path;
             FileInfo fileInfo = new(path);
-            FileInfo = fileInfo;
+            Name = fileInfo.Name;
+            CreationTime = fileInfo.CreationTime;
+            FileSize = fileInfo.Length/1000000; // B to MB
         }
 
         /// <summary>
@@ -36,7 +40,7 @@ namespace RawConverter
         /// <param name="type"></param>
         public void Convert(OutputFileTypes type)
         {
-            string filename = Path.Combine(paths: new string[] { OutputFolder, FileInfo.Name, ".", type.ToString() });
+            string filename = Path.Combine(paths: new string[] { OutputFolder, Name, ".", type.ToString() });
             using (Stream rawFileStream = File.OpenRead(path))
             {
                 /*
@@ -46,10 +50,8 @@ namespace RawConverter
                 */
                 
                 Bitmap newBitmap = new(Image.FromStream(rawFileStream));
-                newBitmap.ToJPG(filename: Path.Combine(new string[] { OutputFolder, FileInfo.Name}));
+                newBitmap.ToJPG(filename: Path.Combine(new string[] { OutputFolder, Name}));
             }
         }
-
-
     }
 }

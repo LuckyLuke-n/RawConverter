@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,20 +10,29 @@ namespace RawConverter
     static class RawFileReader
     {
         // Properties
-        public static string InputFileType { get; set; }
-        public static string[] FilesRead { get; }
-        public static List<RawFile> fileList = new();
+        public static DataTable dataTableFiles = new();
+        public static string FilterString { get { return $"Raw files|*{UserSettings.Default.InputFileType}"; } }
 
         /// <summary>
         /// Method to read an array of raw files into a list.
         /// </summary>
         /// /// <param name="filesToAdd"></param>
-        static void AddFiles(string[] filesToAdd)
+        public static void AddFiles(string[] filesToAdd)
         {
+            // intialize columns if necessary
+            if (dataTableFiles.Rows.Count == 0)
+            {
+                dataTableFiles.Columns.Add("Name", typeof(string));
+                dataTableFiles.Columns.Add("Size", typeof(string));
+                dataTableFiles.Columns.Add("Date created", typeof(DateTime));
+            }
+
+            // add rows to data table
             foreach (string path in filesToAdd)
             {
-                RawFile file = new(path);
-                fileList.Add(file);
+                RawFile rawFile = new(path);
+                object[] values = { rawFile.Name, $"{ rawFile.FileSize } MB" , rawFile.CreationTime };
+                dataTableFiles.Rows.Add(values);
             }
         }
 
@@ -32,10 +42,8 @@ namespace RawConverter
         /// <param name="filesToRemove"></param>
         static void RemoveFiles(string[] filesToRemove)
         {
-            foreach (string file in filesToRemove)
-            {
-                fileList.Remove(new RawFile(file));
-            }
+
+
         }
     }
 }
