@@ -128,5 +128,50 @@ namespace RawConverter
                 }
             }
         }
+
+        /// <summary>
+        /// Event to trigger converting selected images.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonConvert_Click(object sender, RoutedEventArgs e)
+        {
+            if (RawFileReader.OutputFolder != null & RawFileReader.OutputFolder != "")
+            {
+                if (RawFileReader.dataTableFiles.Rows.Count == 0)
+                {
+                    // data table is empty
+                    string caption = AboutThisApp.name;
+                    string messageBoxText = "No images loaded.";
+                    MessageBox.Show(messageBoxText, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("convert");
+                } 
+            }
+            else
+            {
+                string caption = AboutThisApp.name;
+                string messageBoxText = "Please select a destination folder.";
+                MessageBox.Show(messageBoxText, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        /// <summary>
+        /// Event to trigger the folder browser dialog for the output path.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonOutputFolder_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new();
+
+            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // selection was made
+                RawFileReader.OutputFolder = folderBrowserDialog.SelectedPath;
+            }
+        }
     }
 }

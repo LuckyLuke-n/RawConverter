@@ -12,6 +12,7 @@ namespace RawConverter
         // Properties
         public static DataTable dataTableFiles = new();
         public static string FilterString { get { return $"Raw files|*{UserSettings.Default.InputFileType}"; } }
+        public static string OutputFolder { get; set; }
 
         /// <summary>
         /// Method to read an array of raw files into a list.
@@ -43,6 +44,14 @@ namespace RawConverter
         static void RemoveFiles(string[] filesToRemove)
         {
 
+
+        }
+
+        /// <summary>
+        /// Method to convert the items in the DataTable.
+        /// </summary>
+        public static void Convert()
+        {
 
         }
     }

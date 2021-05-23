@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RawConverter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="600">
+        Title="MainWindow" Height="800" Width="800">
     <Grid HorizontalAlignment="Stretch">
 
         <!--- ######################################################################################################################### -->
@@ -53,7 +53,7 @@
 
             <!-- Expander for input file type -->
             <Expander x:Name="ExpanderOutputFolder" Height="auto" Margin="0,0,0,20" FontSize="16" Header="Output folder" ExpandDirection="Down">
-                <Button x:Name="ButtonOutputFolder" Margin="20,10,0,5" Content="Select folder"/>
+                <Button x:Name="ButtonOutputFolder" Margin="20,10,0,5" Content="Select folder" Click="ButtonOutputFolder_Click"/>
             </Expander>
 
             <!-- Expander for output file type -->
@@ -104,7 +104,7 @@
                 </Button.Background>
             </Button>
             <!-- Button for converting -->
-            <Button x:Name="ButtonConvert" Height="75" Width="75" >
+            <Button x:Name="ButtonConvert" Height="75" Width="75" Click="ButtonConvert_Click" >
                 <Button.Background>
                     <ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/convert.png"/>
                 </Button.Background>
