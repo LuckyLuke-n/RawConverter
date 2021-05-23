@@ -14,8 +14,7 @@ namespace RawConverter
     {
         // properties
         public FileInfo FileInfo { get; }
-
-        private static string OutputFolder;
+        public static string OutputFolder { get; set; }
 
         // variables
         private readonly string path;
@@ -40,9 +39,14 @@ namespace RawConverter
             string filename = Path.Combine(paths: new string[] { OutputFolder, FileInfo.Name, ".", type.ToString() });
             using (Stream rawFileStream = File.OpenRead(path))
             {
+                /*
                 // umbauen auf extension method?
                 Image image = Image.FromStream(rawFileStream);
                 image.Save(filename, ImageFormat.Jpeg);
+                */
+                
+                Bitmap newBitmap = new(Image.FromStream(rawFileStream));
+                newBitmap.ToJPG(filename: Path.Combine(new string[] { OutputFolder, FileInfo.Name}));
             }
         }
 

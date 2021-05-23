@@ -6,32 +6,36 @@ using System.Threading.Tasks;
 
 namespace RawConverter
 {
-    class RawFileReader
+    static class RawFileReader
     {
-        public string InputFileType { get; set; }
-        public string[] FilesRead { get; }
-                
-        /// <summary>
-        /// Class to read the selected files into a list.
-        /// </summary>
-        public RawFileReader(string[] filesToRead)
-        {
-            // set property
-            FilesRead = filesToRead;
-        }
+        // Properties
+        public static string InputFileType { get; set; }
+        public static string[] FilesRead { get; }
+        public static List<RawFile> fileList = new();
 
         /// <summary>
         /// Method to read an array of raw files into a list.
         /// </summary>
-        /// <returns>The list containinf all read raw files.</returns>
-        public List<RawFile> Read()
+        /// /// <param name="filesToAdd"></param>
+        static void AddFiles(string[] filesToAdd)
         {
-            List<RawFile> fileList = new();
+            foreach (string path in filesToAdd)
+            {
+                RawFile file = new(path);
+                fileList.Add(file);
+            }
+        }
 
-
-
-
-            return fileList;
+        /// <summary>
+        /// Method to remove files from list.
+        /// </summary>
+        /// <param name="filesToRemove"></param>
+        static void RemoveFiles(string[] filesToRemove)
+        {
+            foreach (string file in filesToRemove)
+            {
+                fileList.Remove(new RawFile(file));
+            }
         }
     }
 }
