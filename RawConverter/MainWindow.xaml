@@ -47,19 +47,22 @@
             <Expander x:Name="ExpanderInputFileType" Height="auto" Margin="0,0,0,20" FontSize="16" Header="Input file type" ExpandDirection="Down">
                 <StackPanel Orientation="Vertical">
                     <CheckBox x:Name="CheckBoxRAW" Margin="20,10,0,5" Content=".raw"/>
-                    <CheckBox x:Name="CheckBoxORF" Margin="20,10,0,5" Content=".orf"/>
+                    <CheckBox x:Name="CheckBoxORF" Margin="20,10,0,5" Content=".orf" IsChecked="true"/>
                 </StackPanel>
             </Expander>
 
             <!-- Expander for input file type -->
             <Expander x:Name="ExpanderOutputFolder" Height="auto" Margin="0,0,0,20" FontSize="16" Header="Output folder" ExpandDirection="Down">
-                <Button x:Name="ButtonOutputFolder" Margin="20,10,0,5" Content="Select folder" Click="ButtonOutputFolder_Click"/>
+                <StackPanel Orientation="Vertical">
+                    <Button x:Name="ButtonOutputFolder" Margin="20,10,0,5" Content="Select folder" Click="ButtonOutputFolder_Click"/>
+                    <Label x:Name="LabelOutputFolder" Content="Current: none" Margin="20,0,0,5" />
+                </StackPanel>
             </Expander>
 
             <!-- Expander for output file type -->
             <Expander x:Name="ExpanderOutputFileType" Height="auto" Margin="0,0,0,20" FontSize="16" Header="Output file type" ExpandDirection="Down">
                 <StackPanel Orientation="Vertical">
-                    <CheckBox x:Name="CheckBoxJPG" Margin="20,10,0,5" Content=".jpg"/>
+                    <CheckBox x:Name="CheckBoxJPG" Margin="20,10,0,5" Content=".jpg" IsChecked="true"/>
                     <CheckBox x:Name="CheckBoxPNG" Margin="20,10,0,5" Content=".png"/>
                     <CheckBox x:Name="CheckBoxTIFF" Margin="20,10,0,5" Content=".tiff"/>
                 </StackPanel>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -75,7 +76,7 @@ namespace RawConverter
         private void RefreshDataGrid()
         {
             // set source
-            DataGridFiles.ItemsSource = RawFileReader.dataTableFiles.DefaultView;
+            DataGridFiles.ItemsSource = RawFileProcessor.dataTableFiles.DefaultView;
 
             // set column widths
             DataGridLength[] columnWidths = { new DataGridLength(3, DataGridLengthUnitType.Star), new DataGridLength(1, DataGridLengthUnitType.Auto), new DataGridLength(1, DataGridLengthUnitType.Auto) };
@@ -116,14 +117,14 @@ namespace RawConverter
             // get the array of file names and insert into the RawFileReader class
             using (System.Windows.Forms.OpenFileDialog openFileDialog = new())
             {
-                openFileDialog.Filter = RawFileReader.FilterString;
+                openFileDialog.Filter = RawFileProcessor.FilterString;
                 openFileDialog.Multiselect = true;
                 System.Windows.Forms.DialogResult result = openFileDialog.ShowDialog();
                 // add files
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
                     // set input files property in RawFileReader class
-                    RawFileReader.AddFiles(openFileDialog.FileNames);
+                    RawFileProcessor.AddFiles(openFileDialog.FileNames);
                     RefreshDataGrid();
                 }
             }
@@ -136,9 +137,9 @@ namespace RawConverter
         /// <param name="e"></param>
         private void ButtonConvert_Click(object sender, RoutedEventArgs e)
         {
-            if (RawFileReader.OutputFolder != null & RawFileReader.OutputFolder != "")
+            if (RawFileProcessor.OutputFolder != null & RawFileProcessor.OutputFolder != "")
             {
-                if (RawFileReader.dataTableFiles.Rows.Count == 0)
+                if (RawFileProcessor.dataTableFiles.Rows.Count == 0)
                 {
                     // data table is empty
                     string caption = AboutThisApp.name;
@@ -147,8 +148,32 @@ namespace RawConverter
                 }
                 else
                 {
-                    MessageBox.Show("convert");
-                } 
+                    // convert all files
+
+                    // set the maximum for the progress bar
+                    ProgressBarConvert.Maximum = RawFileProcessor.listRawFiles.Count;
+
+                    // convert each file in the raw file list
+                    int counter = 1;
+                    foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.listRawFiles)
+                    {
+                        // convert
+                        rawFile.Convert();
+
+                        // rename file
+                        string oldName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + rawFile.Extension;
+                        string newName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + "." + RawFileProcessor.OutputFileType.ToString();
+                        File.Move(oldName, newName);
+
+                        // set the progress bar and label
+                        float progressPercentage = counter / RawFileProcessor.listRawFiles.Count * 100;
+                        double percentageRounded = Math.Round(progressPercentage, 2, MidpointRounding.AwayFromZero);
+                        LabelConvertProgress.Content = $"Progress {percentageRounded}% {rawFile.Name}{rawFile.Extension}";
+                        ProgressBarConvert.Value = counter;
+
+                        counter++;
+                    }
+                }
             }
             else
             {
@@ -170,7 +195,11 @@ namespace RawConverter
             if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 // selection was made
-                RawFileReader.OutputFolder = folderBrowserDialog.SelectedPath;
+                RawFileProcessor.OutputFolder = folderBrowserDialog.SelectedPath;
+
+                // set label and tooltip
+                LabelOutputFolder.Content = "Current: " + RawFileProcessor.OutputFolder;
+                LabelOutputFolder.ToolTip = RawFileProcessor.OutputFolder;
             }
         }
     }

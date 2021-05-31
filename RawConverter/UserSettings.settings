@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="InputFileType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">.orf</Value>
+      <Value Profile="(Default)">orf</Value>
     </Setting>
   </Settings>
 </SettingsFile>

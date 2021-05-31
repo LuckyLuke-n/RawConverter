@@ -24,7 +24,12 @@ namespace RawConverter
             bitmap.Save(filename, GetEncoder(ImageFormat.Jpeg), encoderParameters);
         }
 
-        public static ImageCodecInfo GetEncoder(ImageFormat format)
+        /// <summary>
+        /// Method to get encoders.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        private static ImageCodecInfo GetEncoder(ImageFormat format)
         {
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
 

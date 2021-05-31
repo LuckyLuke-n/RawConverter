@@ -10,12 +10,13 @@ using System.Drawing.Imaging;
 
 namespace RawConverter
 {
-    class RawFile
+    class ddRawFile
     {
         // properties
         public string Name { get; }
         public DateTime CreationTime { get; }
-        public float FileSize { get; }
+        public double FileSize { get; }
+        private OutputFileTypes OutputFileType { get; set; }
 
         // variables
         private readonly string path;
@@ -24,13 +25,14 @@ namespace RawConverter
         /// <summary>
         /// Creates a new RawFile object only reading the FileInfo.
         /// </summary>
-        public RawFile(string path)
+        public ddRawFile(string path)
         {
             this.path = path;
             FileInfo fileInfo = new(path);
             Name = fileInfo.Name;
             CreationTime = fileInfo.CreationTime;
-            FileSize = fileInfo.Length/1000000; // B to MB
+            FileSize = Math.Round((float)fileInfo.Length / 1000000, 3, MidpointRounding.AwayFromZero); // B to MB
+            OutputFileType = RawFileProcessor.OutputFileType;
         }
 
         /// <summary>
@@ -40,16 +42,24 @@ namespace RawConverter
         public void Convert(OutputFileTypes type, string outputFolder)
         {
             string filename = Path.Combine(paths: new string[] { outputFolder, Name, ".", type.ToString() });
-            using (Stream rawFileStream = File.OpenRead(path))
+            Stream imageStreamSource = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            // decode according selection
+            //switch ()
+
+            // convert according selection
+            switch (type)
             {
-                /*
-                // umbauen auf extension method?
-                Image image = Image.FromStream(rawFileStream);
-                image.Save(filename, ImageFormat.Jpeg);
-                */
-                
-                Bitmap newBitmap = new(Image.FromStream(rawFileStream));
-                newBitmap.ToJPG(filename: Path.Combine(new string[] { outputFolder, Name}));
+                case OutputFileTypes.tiff:
+                    break;
+
+                case OutputFileTypes.jpg:
+                    break;
+
+                default:
+                    //type is .jpg
+                    //newBitmap.ToJPG(filename: Path.Combine(new string[] { outputFolder, Name }));
+                    break;
             }
         }
     }
