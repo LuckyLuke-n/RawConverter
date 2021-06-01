@@ -14,7 +14,7 @@ namespace RawConverter
         // static attributes for menu state
         private const int defaultMenuWidth = 70;
         private const int expandedMenuWidth = 250;
-        static bool menuVisible = false;
+        private static bool menuVisible = false;
 
         public MainWindow()
         {
@@ -28,6 +28,10 @@ namespace RawConverter
                 TextBlockInfo.Text = AboutThisApp.name + " V" + AboutThisApp.version + Environment.NewLine + "Bulid date: " + AboutThisApp.builtDate; 
             }
         }
+
+        //////////////////////////////////////////////////////////
+        /// Private methods
+        //////////////////////////////////////////////////////////
 
         /// <summary>
         /// Method to resize the menu column. Elements will be set to visible/invisible while changing the column width.
@@ -89,6 +93,31 @@ namespace RawConverter
         }
 
         /// <summary>
+        /// Method to call the open file dialog to select images.
+        /// </summary>
+        private void AddFiles()
+        {
+            // get the array of file names and insert into the RawFileReader class
+            using (System.Windows.Forms.OpenFileDialog openFileDialog = new())
+            {
+                openFileDialog.Filter = RawFileProcessor.FilterString;
+                openFileDialog.Multiselect = true;
+                System.Windows.Forms.DialogResult result = openFileDialog.ShowDialog();
+                // add files
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    // set input files property in RawFileReader class
+                    RawFileProcessor.AddFiles(openFileDialog.FileNames);
+                    RefreshDataGrid();
+                }
+            }
+        }
+
+        //////////////////////////////////////////////////////////
+        /// Events
+        //////////////////////////////////////////////////////////
+
+        /// <summary>
         /// Event to trigger the Menu resize when the menu button is clicked.
         /// </summary>
         /// <param name="sender"></param>
@@ -115,20 +144,7 @@ namespace RawConverter
         /// <param name="e"></param>
         private void ButtonAddPictures_Click(object sender, RoutedEventArgs e)
         {
-            // get the array of file names and insert into the RawFileReader class
-            using (System.Windows.Forms.OpenFileDialog openFileDialog = new())
-            {
-                openFileDialog.Filter = RawFileProcessor.FilterString;
-                openFileDialog.Multiselect = true;
-                System.Windows.Forms.DialogResult result = openFileDialog.ShowDialog();
-                // add files
-                if (result == System.Windows.Forms.DialogResult.OK)
-                {
-                    // set input files property in RawFileReader class
-                    RawFileProcessor.AddFiles(openFileDialog.FileNames);
-                    RefreshDataGrid();
-                }
-            }
+            AddFiles();
         }
 
         /// <summary>
@@ -164,7 +180,7 @@ namespace RawConverter
                         // rename file
                         string oldName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + rawFile.Extension;
                         string newName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + "." + RawFileProcessor.OutputFileType.ToString();
-                        File.Move(oldName, newName);
+                        File.Move(sourceFileName: oldName, destFileName: newName, overwrite: true);
 
                         // set the progress bar and label by using the dispatcher property
                         // change this into a backgourdworker process. "asynchronos coding" in new thread to avoid freezing.
@@ -204,6 +220,32 @@ namespace RawConverter
                 LabelOutputFolder.Content = "Current: " + RawFileProcessor.OutputFolder;
                 LabelOutputFolder.ToolTip = RawFileProcessor.OutputFolder;
             }
+        }
+
+        /// <summary>
+        /// Event to trigger the add files methods.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItemAddItems_Click(object sender, RoutedEventArgs e)
+        {
+            AddFiles();
+        }
+
+        private void MenuItemRemovedSelected_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Event to clear the files and refresh the data grid.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItemClearAll_Click(object sender, RoutedEventArgs e)
+        {
+            RawFileProcessor.RemoveAllFiles();
+            RefreshDataGrid();
         }
     }
 }

@@ -40,7 +40,7 @@
             </Button.Background>
         </Button>
 
-        <!-- Settings controls -->
+        <!-- Stack panel for settings controls -->
         <StackPanel Grid.Row="1" Margin="10">
 
             <!-- Expander for input file type -->
@@ -91,7 +91,34 @@
 
         <!-- Data Grid -->
         <DataGrid x:Name="DataGridFiles" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" IsReadOnly="True"
-            VerticalScrollBarVisibility="Visible" />
+            VerticalScrollBarVisibility="Visible">
+             
+            <!-- Context menu for data grid -->
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="MenuItemAddItems" Header="Add items" Click="MenuItemAddItems_Click">
+                        <MenuItem.Icon>
+                            <Image Source="pack://siteoforigin:,,,/Resources/AddItems.png" ></Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                        
+                    <MenuItem x:Name="MenuItemRemovedSelected" Header="Remove selected" Click="MenuItemRemovedSelected_Click">
+                        <MenuItem.Icon>
+                            <Image Source="pack://siteoforigin:,,,/Resources/DeleteSelectedItems.png" ></Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    
+                    <Separator/>
+                        
+                    <MenuItem x:Name="MenuItemClearAll" Header="Clear all items" Click="MenuItemClearAll_Click">
+                        <MenuItem.Icon>
+                            <Image Source="pack://siteoforigin:,,,/Resources/ClearAllItems.png" ></Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+        </DataGrid>
 
         <!-- Loading bar -->
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" Margin="10">
@@ -99,6 +126,7 @@
             <ProgressBar x:Name="ProgressBarConvert" Height="50"  />
         </StackPanel>
 
+        <!-- Stack panel for buttons beneath data grid-->
         <StackPanel Margin="10" Grid.Column="2" Grid.Row="2" Orientation="Horizontal">
             <!-- Button for adding pictures -->
             <Button x:Name="ButtonAddPictures" Height="75" Width="75" Margin="0,0,10,0" Click="ButtonAddPictures_Click">

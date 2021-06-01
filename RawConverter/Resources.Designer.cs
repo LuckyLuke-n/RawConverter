@@ -61,6 +61,16 @@ namespace RawConverter {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AddItems {
+            get {
+                object obj = ResourceManager.GetObject("AddItems", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] AddPictures {
@@ -71,12 +81,32 @@ namespace RawConverter {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ClearAllItems {
+            get {
+                object obj = ResourceManager.GetObject("ClearAllItems", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] convert {
             get {
                 object obj = ResourceManager.GetObject("convert", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DeleteSelectedItems {
+            get {
+                object obj = ResourceManager.GetObject("DeleteSelectedItems", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

@@ -88,7 +88,6 @@ namespace RawConverter
             }
         }
 
-
         /// <summary>
         /// Method to read an array of raw files into a list.
         /// </summary>
@@ -96,7 +95,7 @@ namespace RawConverter
         public static void AddFiles(string[] filesToAdd)
         {
             // intialize columns if necessary
-            if (dataTableFiles.Rows.Count == 0)
+            if (dataTableFiles.Columns.Count == 0)
             {
                 dataTableFiles.Columns.Add("Name", typeof(string));
                 dataTableFiles.Columns.Add("Size", typeof(string));
@@ -118,17 +117,54 @@ namespace RawConverter
         }
 
         /// <summary>
-        /// Method to remove files from list.
+        /// Method to remove files from list and data table.
         /// </summary>
         /// <param name="filesToRemove"></param>
-        static void RemoveFiles(int[] filesToRemove)
+        public static void RemoveFiles(int[] indicesToRemove)
         {
             // delete files from data tabel and list
-            foreach (int id in filesToRemove)
+            foreach (int id in indicesToRemove)
             {
                 dataTableFiles.Rows[id].Delete();
                 listRawFiles.RemoveAt(id);
             }
+        }
+
+        /// <summary>
+        /// Method to remove all files from the list and data table.
+        /// </summary>
+        public static void RemoveAllFiles()
+        {
+            // clear list
+            listRawFiles.Clear();
+
+            int i = 0;
+            //Remove All
+            while (i < dataTableFiles.Rows.Count)
+            {
+                DataRow currentRow = dataTableFiles.Rows[i];
+                if (currentRow.RowState != DataRowState.Deleted)
+                {
+                    currentRow.Delete();
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            foreach (DataColumn column in dataTableFiles.Columns)
+            {
+                column.Dispose();
+            }
+
+
+            /*
+            // delete the rows from the data table
+            foreach (DataRow row in dataTableFiles.Rows)
+            {
+                dataTableFiles.Rows.Remove(row);
+            }
+            */
         }
     }
 }
