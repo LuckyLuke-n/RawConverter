@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace RawConverter
 {
@@ -165,12 +166,14 @@ namespace RawConverter
                         string newName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + "." + RawFileProcessor.OutputFileType.ToString();
                         File.Move(oldName, newName);
 
-                        // set the progress bar and label
-                        float progressPercentage = counter / RawFileProcessor.listRawFiles.Count * 100;
-                        double percentageRounded = Math.Round(progressPercentage, 2, MidpointRounding.AwayFromZero);
-                        LabelConvertProgress.Content = $"Progress {percentageRounded}% {rawFile.Name}{rawFile.Extension}";
-                        ProgressBarConvert.Value = counter;
+                        // set the progress bar and label by using the dispatcher property
+                        // change this into a backgourdworker process. "asynchronos coding" in new thread to avoid freezing.
+                        float progressFraction = (float)counter / RawFileProcessor.listRawFiles.Count;
+                        double percentageRounded = Math.Round(progressFraction * 100, 2, MidpointRounding.AwayFromZero);
+                        _ = LabelConvertProgress.Dispatcher.Invoke(() => LabelConvertProgress.Content = $"Progress {percentageRounded}% {rawFile.Name}{rawFile.Extension}", DispatcherPriority.Background);
+                        _ = ProgressBarConvert.Dispatcher.Invoke(() => ProgressBarConvert.Value = counter, DispatcherPriority.Background);
 
+                        // set counter
                         counter++;
                     }
                 }
