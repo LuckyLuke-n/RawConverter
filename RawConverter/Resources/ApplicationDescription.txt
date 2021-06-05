@@ -1,2 +1,2 @@
-Convert your raw file images to universal readable file types.
+Convert your raw file images to universally readable file types.
 This application is licensed under BSD 3-Clause License. For more click the license tab below.
