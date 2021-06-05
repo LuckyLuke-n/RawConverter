@@ -81,6 +81,16 @@ namespace RawConverter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Convert your raw file images to universal readable file types.
+        ///This application is licensed under BSD 3-Clause License. For more click the license tab below..
+        /// </summary>
+        internal static string ApplicationDescription {
+            get {
+                return ResourceManager.GetString("ApplicationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ClearAllItems {
@@ -121,6 +131,61 @@ namespace RawConverter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Magick.NET-Q16-AnyCPU by Dirk Lemstra
+        ///
+        ///License:
+        ///Apache License Version 2.0, January 2004
+        ///Copyright 2013-2021 Dirk Lemstra
+        ///
+        ///_______________________________________________________________________________________________
+        ///
+        ///
+        ///System.Drawing.Common by Microsoft
+        ///
+        ///License:
+        ///The MIT License (MIT)
+        ///© Microsoft Corporation. All rights reserved.
+        ///
+        ///_______________________________________________________________________________________________.
+        /// </summary>
+        internal static string Libraries {
+            get {
+                return ResourceManager.GetString("Libraries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BSD 3-Clause License
+        ///
+        ///Copyright (c) 2021, Ludwig Sembach
+        ///All rights reserved.
+        ///
+        ///Redistribution and use in source and binary forms, with or without
+        ///modification, are permitted provided that the following conditions are met:
+        ///
+        ///1. Redistributions of source code must retain the above copyright notice, this
+        ///   list of conditions and the following disclaimer.
+        ///
+        ///2. Redistributions in binary form must reproduce the above copyright notice,
+        ///   this list of conditions and the following disclaimer in the docum [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string License {
+            get {
+                return ResourceManager.GetString("License", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Logo {
+            get {
+                object obj = ResourceManager.GetObject("Logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] MainIcon {
@@ -137,6 +202,17 @@ namespace RawConverter {
             get {
                 object obj = ResourceManager.GetObject("menu", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What&apos;s new in this version?
+        ///
+        ///First release..
+        /// </summary>
+        internal static string WhatsNew {
+            get {
+                return ResourceManager.GetString("WhatsNew", resourceCulture);
             }
         }
     }

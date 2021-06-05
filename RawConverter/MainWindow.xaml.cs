@@ -25,7 +25,7 @@ namespace RawConverter
             // function to set app info
             void SetAppInfo()
             {
-                TextBlockInfo.Text = AboutThisApp.name + " V" + AboutThisApp.version + Environment.NewLine + "Bulid date: " + AboutThisApp.builtDate; 
+                TextBlockInfo.Text = AboutThisApp.name + " V" + AboutThisApp.version + Environment.NewLine + "Bulid date: " + AboutThisApp.buildDate;
             }
         }
 
@@ -246,6 +246,16 @@ namespace RawConverter
         {
             RawFileProcessor.RemoveAllFiles();
             RefreshDataGrid();
+        }
+
+        /// <summary>
+        /// Event to open the AboutWindow.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonMoreInfo_Click(object sender, RoutedEventArgs e)
+        {
+            new AboutWindow().Show();
         }
     }
 }

@@ -10,6 +10,6 @@ namespace RawConverter
     {
         public static readonly string name = "Raw Converter";
         public static readonly string version = "1.0.0";
-        public static readonly string builtDate = "2021-05-21";
+        public static readonly string buildDate = "2021-05-21";
     }
 }
