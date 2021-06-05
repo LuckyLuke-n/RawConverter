@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -168,11 +171,11 @@ namespace RawConverter
                     // convert all files
 
                     // set the maximum for the progress bar
-                    ProgressBarConvert.Maximum = RawFileProcessor.listRawFiles.Count;
+                    ProgressBarConvert.Maximum = RawFileProcessor.rawFiles.Count;
 
                     // convert each file in the raw file list
                     int counter = 1;
-                    foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.listRawFiles)
+                    foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.rawFiles)
                     {
                         // convert
                         rawFile.Convert();
@@ -184,7 +187,7 @@ namespace RawConverter
 
                         // set the progress bar and label by using the dispatcher property
                         // change this into a backgourdworker process. "asynchronos coding" in new thread to avoid freezing.
-                        float progressFraction = (float)counter / RawFileProcessor.listRawFiles.Count;
+                        float progressFraction = (float)counter / RawFileProcessor.rawFiles.Count;
                         double percentageRounded = Math.Round(progressFraction * 100, 2, MidpointRounding.AwayFromZero);
                         _ = LabelConvertProgress.Dispatcher.Invoke(() => LabelConvertProgress.Content = $"Progress {percentageRounded}% {rawFile.Name}{rawFile.Extension}", DispatcherPriority.Background);
                         _ = ProgressBarConvert.Dispatcher.Invoke(() => ProgressBarConvert.Value = counter, DispatcherPriority.Background);
@@ -232,9 +235,28 @@ namespace RawConverter
             AddFiles();
         }
 
+        /// <summary>
+        /// Event to trigger methods to remove the selected item(s) from the datatable and datagrid.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItemRemovedSelected_Click(object sender, RoutedEventArgs e)
         {
+            // get selected items
+            IList selectedItems = DataGridFiles.SelectedItems;
 
+            // extract the indices
+            List<int> selectedIndices = new();
+            foreach (DataRowView item in selectedItems)
+            {
+                // add the index to the list
+                int index = RawFileProcessor.RawFilesNames.IndexOf(item.Row["Name"].ToString());
+                selectedIndices.Add(index);
+            }
+
+            // remove the files and update the gui
+            RawFileProcessor.RemoveFiles(selectedIndices);
+            RefreshDataGrid();
         }
 
         /// <summary>

@@ -13,15 +13,22 @@ namespace RawConverter
 {
     static class RawFileProcessor
     {
-        // Properties
+        // PROPERTIES
         public static DataTable dataTableFiles = new();
         public static string FilterString { get { return $"Raw files|*{UserSettings.Default.InputFileType}"; } } // for selected file type in browser file window
         public static string OutputFolder { get; set; }
         public static OutputFileTypes OutputFileType = OutputFileTypes.jpg; // preset is .jpg
         public static InputFileTypes InputFileType { get; }
+        /// <summary>
+        /// Get a list of raw file names including the file extension.
+        /// </summary>
+        public static List<string> RawFilesNames => GetRawFileNames();
 
-        // attributes
-        public static List<RawFile> listRawFiles = new();
+        // ATTRIBUTES
+        /// <summary>
+        /// Used in ButtonConvert_Clicked event. Necessary to loop through a list of objects of type RawFile in order to call the Convert() method.
+        /// </summary>
+        public static List<RawFile> rawFiles = new();
 
 
         /// <summary>
@@ -29,8 +36,14 @@ namespace RawConverter
         /// </summary>
         public class RawFile
         {
-            // properties
+            // PROPERTIES
+            /// <summary>
+            /// Gets the file name. This does not include the file extension.
+            /// </summary>
             public string Name { get; }
+            /// <summary>
+            /// Gets the value for the file extension including the dot (.).
+            /// </summary>
             public string Extension { get; }
             public DateTime CreationTime { get; }
             public double FileSize { get; }
@@ -89,6 +102,22 @@ namespace RawConverter
         }
 
         /// <summary>
+        /// Method to get a list of the currently loaded raw file names.
+        /// </summary>
+        /// <returns>Return a list containing the strings for all raw file names.</returns>
+        private static List<string> GetRawFileNames()
+        {
+            List<string> rawFileNames = new();
+
+            foreach (RawFile rawFile in rawFiles)
+            {
+                rawFileNames.Add(rawFile.Name + rawFile.Extension);
+            }
+
+            return rawFileNames;
+        }
+
+        /// <summary>
         /// Method to read an array of raw files into a list.
         /// </summary>
         /// /// <param name="filesToAdd"></param>
@@ -112,7 +141,7 @@ namespace RawConverter
                 dataTableFiles.Rows.Add(values);
 
                 // add raw file object to list
-                listRawFiles.Add(rawFile);
+                rawFiles.Add(rawFile);
             }
         }
 
@@ -120,14 +149,40 @@ namespace RawConverter
         /// Method to remove files from list and data table.
         /// </summary>
         /// <param name="filesToRemove"></param>
-        public static void RemoveFiles(int[] indicesToRemove)
+        public static void RemoveFiles(List<int> indicesToRemove)
         {
-            // delete files from data tabel and list
-            foreach (int id in indicesToRemove)
+            // list recessary to handle the data
+            List<DataRow> rowsToDelete = new();
+            List<RawFile> itemsToKeep = new();
+
+            // check if row needs to be deleted
+            int id = 0;
+            foreach (DataRow row in dataTableFiles.Rows)
             {
-                dataTableFiles.Rows[id].Delete();
-                listRawFiles.RemoveAt(id);
+                if (indicesToRemove.Contains(id) == true)
+                {
+                    // item is in the delete query
+                    // add the item to the "to-be-deleted-list"
+                    rowsToDelete.Add(row);
+                }
+                else
+                {
+                    // this row is to be kept
+                    // add the corresponding RawFile object to the "to-be-kept-list". This list will replate the current rawFiles-attribute
+                    itemsToKeep.Add(rawFiles[id]);
+                }
+
+                id++; // set the counter
             }
+
+            // delete the rows from the data table
+            foreach (DataRow row in rowsToDelete)
+            {
+                dataTableFiles.Rows.Remove(row);
+            }
+
+            // point the rawFiles list to the new itemsToKeep list containing only the file designated to be kept
+            rawFiles = itemsToKeep;
         }
 
         /// <summary>
@@ -136,7 +191,7 @@ namespace RawConverter
         public static void RemoveAllFiles()
         {
             // clear list
-            listRawFiles.Clear();
+            rawFiles.Clear();
 
             int i = 0;
             //Remove All
@@ -166,5 +221,6 @@ namespace RawConverter
             }
             */
         }
+
     }
 }
