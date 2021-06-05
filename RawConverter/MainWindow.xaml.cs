@@ -28,6 +28,7 @@ namespace RawConverter
             // function to set app info
             void SetAppInfo()
             {
+                Title = AboutThisApp.name;
                 TextBlockInfo.Text = AboutThisApp.name + " V" + AboutThisApp.version + Environment.NewLine + "Bulid date: " + AboutThisApp.buildDate;
             }
         }
