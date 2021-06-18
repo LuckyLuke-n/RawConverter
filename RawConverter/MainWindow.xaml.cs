@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -18,6 +20,10 @@ namespace RawConverter
         private const int defaultMenuWidth = 70;
         private const int expandedMenuWidth = 250;
         private static bool menuVisible = false;
+
+        // variables for async events in this class
+        private BackgroundWorker backGroundWorkerConvert;
+        private CancellationTokenSource cancelToken = new();
 
         public MainWindow()
         {
@@ -93,6 +99,7 @@ namespace RawConverter
             foreach (DataGridColumn column in DataGridFiles.Columns)
             {
                 column.Width = columnWidths[counter];
+                counter++;
             }       
         }
 
@@ -116,6 +123,78 @@ namespace RawConverter
                 }
             }
         }
+
+
+        //////////////////////////////////////////////////////////
+        /// Async converting events
+        //////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// Event for converting the images in the other thread.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Convert_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // convert each file in the raw file list
+            int counter = 1;
+            foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.rawFiles)
+            {
+                // check if process was aborted by user
+                if (backGroundWorkerConvert.CancellationPending == true)
+                {
+                    // abort requested
+                    e.Cancel = true;
+                    break;
+                }
+                else
+                {
+                    // convert
+                    rawFile.Convert();
+
+                    // rename file
+                    string oldName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + rawFile.Extension;
+                    string newName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + "." + RawFileProcessor.OutputFileType.ToString();
+                    File.Move(sourceFileName: oldName, destFileName: newName, overwrite: true);
+
+                    // set counter
+                    counter++;
+
+                    // current job percentage
+                    int percentProgress = counter / RawFileProcessor.rawFiles.Count * 100;
+
+                    // report progress
+                    backGroundWorkerConvert.ReportProgress(percentProgress);
+                    Thread.Sleep(100);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Event raised when progress in async method changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Convert_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // set the progress bar and label by using the dispatcher property
+            LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}%";
+            ProgressBarConvert.Value = e.ProgressPercentage;
+            //_ = LabelConvertProgress.Dispatcher.Invoke(() => LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}%", DispatcherPriority.Background);
+            //_ = ProgressBarConvert.Dispatcher.Invoke(() => ProgressBarConvert.Value = e.ProgressPercentage, DispatcherPriority.Background);
+        }
+
+        /// <summary>
+        /// Event raised when process is done.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Export_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MessageBox.Show("Export Complete", "Export", MessageBoxButton.OK, MessageBoxImage.Information);
+
+        }
+
 
         //////////////////////////////////////////////////////////
         /// Events
@@ -165,10 +244,11 @@ namespace RawConverter
                     // data table is empty
                     string caption = AboutThisApp.name;
                     string messageBoxText = "No images loaded.";
-                    MessageBox.Show(messageBoxText, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+                    _ = MessageBox.Show(messageBoxText, caption, MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
+                    /* OLD
                     // convert all files
 
                     // set the maximum for the progress bar
@@ -196,6 +276,19 @@ namespace RawConverter
                         // set counter
                         counter++;
                     }
+                    */
+
+                    // NEW ASYNC
+
+                    // new backgroundworker
+                    backGroundWorkerConvert = new();
+                    backGroundWorkerConvert.WorkerReportsProgress = true;
+                    backGroundWorkerConvert.DoWork += Convert_DoWork;
+                    backGroundWorkerConvert.RunWorkerCompleted += Export_RunWorkerCompleted;
+                    backGroundWorkerConvert.ProgressChanged += new ProgressChangedEventHandler(Convert_ProgressChanged);
+
+                    // run the background worker
+                    backGroundWorkerConvert.RunWorkerAsync();
                 }
             }
             else

@@ -123,7 +123,7 @@
         <!-- Loading bar -->
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" Margin="10">
             <Label x:Name="LabelConvertProgress" Content="Progress"/>
-            <ProgressBar x:Name="ProgressBarConvert" Height="50"  />
+            <ProgressBar x:Name="ProgressBarConvert" Height="50" Minimum="0" Maximum="100"  />
         </StackPanel>
 
         <!-- Stack panel for buttons beneath data grid-->
