@@ -81,12 +81,22 @@ namespace RawConverter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert your raw file images to universal readable file types.
+        ///   Looks up a localized string similar to Convert your raw file images to universally readable file types.
         ///This application is licensed under BSD 3-Clause License. For more click the license tab below..
         /// </summary>
         internal static string ApplicationDescription {
             get {
                 return ResourceManager.GetString("ApplicationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Cancel {
+            get {
+                object obj = ResourceManager.GetObject("Cancel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -137,8 +147,7 @@ namespace RawConverter {
         ///Apache License Version 2.0, January 2004
         ///Copyright 2013-2021 Dirk Lemstra
         ///
-        ///_______________________________________________________________________________________________
-        ///
+        ///_______________________________________________________________________
         ///
         ///System.Drawing.Common by Microsoft
         ///
@@ -146,7 +155,7 @@ namespace RawConverter {
         ///The MIT License (MIT)
         ///© Microsoft Corporation. All rights reserved.
         ///
-        ///_______________________________________________________________________________________________.
+        ///_______________________________________________________________________.
         /// </summary>
         internal static string Libraries {
             get {
@@ -208,7 +217,13 @@ namespace RawConverter {
         /// <summary>
         ///   Looks up a localized string similar to What&apos;s new in this version?
         ///
-        ///First release..
+        ///First release.
+        ///
+        ///Some features are not yet supported:
+        ///- Changing the input file type from .orf to. raw.
+        ///- Changing the output file type from .jpg to .png or .tiff
+        ///- Adjusting the output file image properties specifying image quality and other attributes.
+        ///- The user interface for some of those features might already be available. Keep in mind that those controls are not linked to further code behind..
         /// </summary>
         internal static string WhatsNew {
             get {

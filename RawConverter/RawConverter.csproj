@@ -38,6 +38,9 @@
     <None Update="Resources\ApplicationDescription.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\Cancel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\ClearAllItems.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

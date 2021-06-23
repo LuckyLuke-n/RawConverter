@@ -7,6 +7,8 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace RawConverter
@@ -23,7 +25,7 @@ namespace RawConverter
 
         // variables for async events in this class
         private BackgroundWorker backGroundWorkerConvert;
-        private CancellationTokenSource cancelToken = new();
+        private static bool buttonIsConvert = true;
 
         public MainWindow()
         {
@@ -124,6 +126,30 @@ namespace RawConverter
             }
         }
 
+        /// <summary>
+        /// Method to change the event for the button convert.
+        /// </summary>
+        private void ChangeButtonConvert()
+        {
+            if (buttonIsConvert == true)
+            {
+                // switch to cancel button
+                ImageBrush brush = new()
+                {
+                    ImageSource = new BitmapFromPath().Load(path: "Resources/Cancel.png")
+                };
+                ButtonConvert.Background = brush;
+            }
+            else
+            {
+                // switch to convert button
+                ImageBrush brush = new()
+                {
+                    ImageSource = new BitmapFromPath().Load(path: "Resources/convert.png")
+                };
+                ButtonConvert.Background = brush;
+            }
+        }
 
         //////////////////////////////////////////////////////////
         /// Async converting events
@@ -163,9 +189,10 @@ namespace RawConverter
                     // current job percentage
                     int percentProgress = counter / RawFileProcessor.rawFiles.Count * 100;
 
+                    Thread.Sleep(100);
+
                     // report progress
                     backGroundWorkerConvert.ReportProgress(percentProgress);
-                    Thread.Sleep(100);
                 }
             }
         }
@@ -177,11 +204,22 @@ namespace RawConverter
         /// <param name="e"></param>
         private void Convert_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            // set the progress bar and label by using the dispatcher property
+            /*
+            Dispatcher.Invoke(new Action(() =>
+            {
+                LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}%";
+                ProgressBarConvert.Value = e.ProgressPercentage;
+                LabelConvertProgress.UpdateLayout();
+                ProgressBarConvert.UpdateLayout();
+            }
+            ));
+            */
+
             LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}%";
             ProgressBarConvert.Value = e.ProgressPercentage;
-            //_ = LabelConvertProgress.Dispatcher.Invoke(() => LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}%", DispatcherPriority.Background);
-            //_ = ProgressBarConvert.Dispatcher.Invoke(() => ProgressBarConvert.Value = e.ProgressPercentage, DispatcherPriority.Background);
+
+            //_ = LabelConvertProgress.Dispatcher.BeginInvoke(() => LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}%", DispatcherPriority.Normal);
+            //_ = ProgressBarConvert.Dispatcher.BeginInvoke(() => ProgressBarConvert.Value = e.ProgressPercentage, DispatcherPriority.Normal);
         }
 
         /// <summary>
@@ -191,8 +229,8 @@ namespace RawConverter
         /// <param name="e"></param>
         private void Export_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            MessageBox.Show("Export Complete", "Export", MessageBoxButton.OK, MessageBoxImage.Information);
-
+            // reset is convert button flag
+            buttonIsConvert = true;
         }
 
 
@@ -248,6 +286,40 @@ namespace RawConverter
                 }
                 else
                 {
+                    // set flag for button is convert
+                    ChangeButtonConvert();
+
+                    // activate background process or cancel it
+                    if (buttonIsConvert == true)
+                    {
+                        // NEW ASYNC
+                        // new backgroundworker
+                        backGroundWorkerConvert = new()
+                        {
+                            WorkerReportsProgress = true,
+                            WorkerSupportsCancellation = true
+                        };
+                        backGroundWorkerConvert.DoWork += Convert_DoWork;
+                        backGroundWorkerConvert.RunWorkerCompleted += Export_RunWorkerCompleted;
+                        //backGroundWorkerConvert.ProgressChanged += new ProgressChangedEventHandler(Convert_ProgressChanged);
+                        backGroundWorkerConvert.ProgressChanged += Convert_ProgressChanged;
+
+                        // run the background worker
+                        backGroundWorkerConvert.RunWorkerAsync();
+
+                        // set flag for button is convert
+                        buttonIsConvert = false;
+                    }
+                    else
+                    {
+                        // CANCEL ASYNC
+                        backGroundWorkerConvert.CancelAsync();
+
+                        // set flag for button is convert
+                        buttonIsConvert = true;
+                    }
+
+
                     /* OLD
                     // convert all files
 
@@ -278,24 +350,14 @@ namespace RawConverter
                     }
                     */
 
-                    // NEW ASYNC
 
-                    // new backgroundworker
-                    backGroundWorkerConvert = new();
-                    backGroundWorkerConvert.WorkerReportsProgress = true;
-                    backGroundWorkerConvert.DoWork += Convert_DoWork;
-                    backGroundWorkerConvert.RunWorkerCompleted += Export_RunWorkerCompleted;
-                    backGroundWorkerConvert.ProgressChanged += new ProgressChangedEventHandler(Convert_ProgressChanged);
-
-                    // run the background worker
-                    backGroundWorkerConvert.RunWorkerAsync();
                 }
             }
             else
             {
                 string caption = AboutThisApp.name;
                 string messageBoxText = "Please select a destination folder.";
-                MessageBox.Show(messageBoxText, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+                _ = MessageBox.Show(messageBoxText, caption, MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
