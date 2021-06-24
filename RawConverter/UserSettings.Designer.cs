@@ -34,5 +34,17 @@ namespace RawConverter {
                 this["InputFileType"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("png")]
+        public string OutputFileType {
+            get {
+                return ((string)(this["OutputFileType"]));
+            }
+            set {
+                this["OutputFileType"] = value;
+            }
+        }
     }
 }

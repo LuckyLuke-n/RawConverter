@@ -46,8 +46,8 @@
             <!-- Expander for input file type -->
             <Expander x:Name="ExpanderInputFileType" Height="auto" Margin="0,0,0,20" FontSize="16" Header="Input file type" ExpandDirection="Down">
                 <StackPanel Orientation="Vertical">
-                    <CheckBox x:Name="CheckBoxRAW" Margin="20,10,0,5" Content=".raw"/>
-                    <CheckBox x:Name="CheckBoxORF" Margin="20,10,0,5" Content=".orf" IsChecked="true"/>
+                    <CheckBox x:Name="CheckBoxRAW" Margin="20,10,0,5" Content=".raw" Checked="CheckBoxRAW_Checked"/>
+                    <CheckBox x:Name="CheckBoxORF" Margin="20,10,0,5" Content=".orf" Checked="CheckBoxORF_Checked"/>
                 </StackPanel>
             </Expander>
 
@@ -62,9 +62,9 @@
             <!-- Expander for output file type -->
             <Expander x:Name="ExpanderOutputFileType" Height="auto" Margin="0,0,0,20" FontSize="16" Header="Output file type" ExpandDirection="Down">
                 <StackPanel Orientation="Vertical">
-                    <CheckBox x:Name="CheckBoxJPG" Margin="20,10,0,5" Content=".jpg" IsChecked="true"/>
-                    <CheckBox x:Name="CheckBoxPNG" Margin="20,10,0,5" Content=".png"/>
-                    <CheckBox x:Name="CheckBoxTIFF" Margin="20,10,0,5" Content=".tiff"/>
+                    <CheckBox x:Name="CheckBoxJPG" Margin="20,10,0,5" Content=".jpg" Checked="CheckBoxJPG_Checked"/>
+                    <CheckBox x:Name="CheckBoxPNG" Margin="20,10,0,5" Content=".png" Checked="CheckBoxPNG_Checked"/>
+                    <CheckBox x:Name="CheckBoxTIFF" Margin="20,10,0,5" Content=".tiff" Checked="CheckBoxTIFF_Checked"/>
                 </StackPanel>
             </Expander>
 

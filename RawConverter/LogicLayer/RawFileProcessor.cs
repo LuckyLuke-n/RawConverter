@@ -9,22 +9,30 @@ namespace RawConverter
 {
     static class RawFileProcessor
     {
-        // PROPERTIES
-        public static DataTable dataTableFiles = new();
-        public static string FilterString { get { return $"Raw files|*{UserSettings.Default.InputFileType}"; } } // for selected file type in browser file window
-        public static string OutputFolder { get; set; }
-        public static OutputFileTypes OutputFileType = OutputFileTypes.jpg; // preset is .jpg
-        public static InputFileTypes InputFileType { get; }
-        /// <summary>
-        /// Get a list of raw file names including the file extension.
-        /// </summary>
-        public static List<string> RawFilesNames => GetRawFileNames();
-
         // ATTRIBUTES
+        private static List<string> listInputFileTypes = Enum.GetNames(typeof(InputFileTypes)).ToList();
+        private static List<string> listOutputFileTypes = Enum.GetNames(typeof(OutputFileTypes)).ToList();
+        public static DataTable dataTableFiles = new();
         /// <summary>
         /// Used in ButtonConvert_Clicked event. Necessary to loop through a list of objects of type RawFile in order to call the Convert() method.
         /// </summary>
         public static List<RawFile> rawFiles = new();
+
+        // PROPERTIES
+        public static string FilterString { get { return $"Raw files|*{UserSettings.Default.InputFileType}"; } } // for selected file type in browser file window
+        public static string OutputFolder { get; set; }
+        /// <summary>
+        /// Gets the output file type for converted images.
+        /// </summary>
+        public static OutputFileTypes OutputFileType { get; private set; } = (OutputFileTypes)listOutputFileTypes.IndexOf(UserSettings.Default.OutputFileType);
+        /// <summary>
+        /// Gets the input file type for raw files.
+        /// </summary>
+        public static InputFileTypes InputFileType { get; private set; } = (InputFileTypes)listInputFileTypes.IndexOf(UserSettings.Default.InputFileType);
+        /// <summary>
+        /// Get a list of raw file names including the file extension.
+        /// </summary>
+        public static List<string> RawFilesNames => GetRawFileNames();
 
 
         /// <summary>
@@ -47,7 +55,7 @@ namespace RawConverter
 
             // variables
             public readonly string path;
-            private readonly List<string> listFileTypes = Enum.GetNames(typeof(InputFileTypes)).ToList();
+            //private readonly List<string> listFileTypes = Enum.GetNames(typeof(InputFileTypes)).ToList();
             private readonly FileInfo fileInfo;
 
 
@@ -62,7 +70,7 @@ namespace RawConverter
                 Extension = fileInfo.Extension;
                 CreationTime = fileInfo.CreationTime;
                 FileSize = Math.Round((float)fileInfo.Length / 1000000, 3, MidpointRounding.AwayFromZero); // B to MB
-                FileType = (InputFileTypes)listFileTypes.IndexOf(UserSettings.Default.InputFileType);
+                FileType = (InputFileTypes)listInputFileTypes.IndexOf(UserSettings.Default.InputFileType);
             }
 
             /// <summary>

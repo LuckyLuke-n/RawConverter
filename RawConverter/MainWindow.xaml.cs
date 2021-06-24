@@ -8,8 +8,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace RawConverter
 {
@@ -32,12 +30,54 @@ namespace RawConverter
             InitializeComponent();
             ResizeMenuColum(width: defaultMenuWidth);
             SetAppInfo();
+            SetCheckboxes();
 
             // function to set app info
             void SetAppInfo()
             {
                 Title = AboutThisApp.name;
                 TextBlockInfo.Text = AboutThisApp.name + " V" + AboutThisApp.version + Environment.NewLine + "Bulid date: " + AboutThisApp.buildDate;
+            }
+
+            // function to set check boxes
+            void SetCheckboxes()
+            {
+                // input
+                switch (RawFileProcessor.InputFileType)
+                {
+                    case InputFileTypes.orf:
+                        CheckBoxORF.IsChecked = true;
+                        CheckBoxRAW.IsChecked = false;
+                        break;
+                    case InputFileTypes.raw:
+                        CheckBoxORF.IsChecked = false;
+                        CheckBoxRAW.IsChecked = true;
+                        break;
+                    default:
+                        break;
+                }
+
+                // ouput
+                switch (RawFileProcessor.OutputFileType)
+                {
+                    case OutputFileTypes.jpg:
+                        CheckBoxJPG.IsChecked = true;
+                        CheckBoxPNG.IsChecked = false;
+                        CheckBoxTIFF.IsChecked = false;
+                        break;
+                    case OutputFileTypes.png:
+                        CheckBoxJPG.IsChecked = false;
+                        CheckBoxPNG.IsChecked = true;
+                        CheckBoxTIFF.IsChecked = false;
+                        break;
+                    case OutputFileTypes.tiff:
+                        CheckBoxJPG.IsChecked = false;
+                        CheckBoxPNG.IsChecked = false;
+                        CheckBoxTIFF.IsChecked = true;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -230,6 +270,7 @@ namespace RawConverter
         private void Export_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             // reset is convert button flag
+            ChangeButtonConvert();
             buttonIsConvert = true;
         }
 
@@ -286,7 +327,7 @@ namespace RawConverter
                 }
                 else
                 {
-                    // set flag for button is convert
+                    // change button appearance
                     ChangeButtonConvert();
 
                     // activate background process or cancel it
@@ -434,6 +475,69 @@ namespace RawConverter
         private void ButtonMoreInfo_Click(object sender, RoutedEventArgs e)
         {
             new AboutWindow().Show();
+        }
+
+        /// <summary>
+        /// Event to trigger setting change when checkbox raw is checked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckBoxRAW_Checked(object sender, RoutedEventArgs e)
+        {
+            UserSettings.Default.InputFileType = "raw";
+            UserSettings.Default.Save();
+            CheckBoxORF.IsChecked = false;
+        }
+
+        /// <summary>
+        /// Event to trigger setting change when checkbox orf is checked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckBoxORF_Checked(object sender, RoutedEventArgs e)
+        {
+            UserSettings.Default.InputFileType = "orf";
+            UserSettings.Default.Save();
+            CheckBoxRAW.IsChecked = false;
+        }
+
+        /// <summary>
+        /// Event to trigger setting change when checkbox jpg is checked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckBoxJPG_Checked(object sender, RoutedEventArgs e)
+        {
+            UserSettings.Default.OutputFileType = "jpg";
+            UserSettings.Default.Save();
+            CheckBoxPNG.IsChecked = false;
+            CheckBoxTIFF.IsChecked = false;
+        }
+
+        /// <summary>
+        /// Event to trigger setting change when checkbox png is checked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckBoxPNG_Checked(object sender, RoutedEventArgs e)
+        {
+            UserSettings.Default.OutputFileType = "png";
+            UserSettings.Default.Save();
+            CheckBoxJPG.IsChecked = false;
+            CheckBoxTIFF.IsChecked = false;
+        }
+
+        /// <summary>
+        /// Event to trigger setting change when checkbox tiff is checked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckBoxTIFF_Checked(object sender, RoutedEventArgs e)
+        {
+            UserSettings.Default.OutputFileType = "tiff";
+            UserSettings.Default.Save();
+            CheckBoxPNG.IsChecked = false;
+            CheckBoxJPG.IsChecked = false;
         }
     }
 }
