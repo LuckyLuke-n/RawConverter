@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace RawConverter
 {
@@ -80,6 +81,7 @@ namespace RawConverter
                 }
             }
         }
+
 
         //////////////////////////////////////////////////////////
         /// Private methods
@@ -179,6 +181,7 @@ namespace RawConverter
                     ImageSource = new BitmapFromPath().Load(path: "Resources/Cancel.png")
                 };
                 ButtonConvert.Background = brush;
+                buttonIsConvert = false;
             }
             else
             {
@@ -188,8 +191,21 @@ namespace RawConverter
                     ImageSource = new BitmapFromPath().Load(path: "Resources/convert.png")
                 };
                 ButtonConvert.Background = brush;
+                buttonIsConvert = true;
             }
         }
+
+        /// <summary>
+        /// Method to switch the check box states for the output file type.
+        /// </summary>
+        /// <param name="isEnabled"></param>
+        private void SwitchCheckBoxState(bool isEnabled)
+        {
+            _ = CheckBoxJPG.Dispatcher.Invoke(() => CheckBoxJPG.IsEnabled = isEnabled, DispatcherPriority.Background);
+            _ = CheckBoxPNG.Dispatcher.Invoke(() => CheckBoxPNG.IsEnabled = isEnabled, DispatcherPriority.Background);
+            _ = CheckBoxTIFF.Dispatcher.Invoke(() => CheckBoxTIFF.IsEnabled = isEnabled, DispatcherPriority.Background);
+        }
+
 
         //////////////////////////////////////////////////////////
         /// Async converting events
@@ -202,6 +218,9 @@ namespace RawConverter
         /// <param name="e"></param>
         private void Convert_DoWork(object sender, DoWorkEventArgs e)
         {
+            // disable checkboxes
+            SwitchCheckBoxState(isEnabled: false);
+
             // convert each file in the raw file list
             int counter = 1;
             foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.rawFiles)
@@ -211,6 +230,7 @@ namespace RawConverter
                 {
                     // abort requested
                     e.Cancel = true;
+                    SwitchCheckBoxState(isEnabled: true);
                     break;
                 }
                 else
@@ -269,9 +289,12 @@ namespace RawConverter
         /// <param name="e"></param>
         private void Export_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            // reset is convert button flag
+            // set flag for button is convert
+            //buttonIsConvert = true;
             ChangeButtonConvert();
-            buttonIsConvert = true;
+
+            // reset is convert button flag and check boxes
+            SwitchCheckBoxState(isEnabled: true);
         }
 
 
@@ -327,13 +350,15 @@ namespace RawConverter
                 }
                 else
                 {
-                    // change button appearance
-                    ChangeButtonConvert();
-
                     // activate background process or cancel it
                     if (buttonIsConvert == true)
                     {
+                        // change button appearance
+                        ChangeButtonConvert();
+
                         // NEW ASYNC
+                        // set flag for running process
+                        RawFileProcessor.ProcessIsRunning = true;
                         // new backgroundworker
                         backGroundWorkerConvert = new()
                         {
@@ -347,51 +372,13 @@ namespace RawConverter
 
                         // run the background worker
                         backGroundWorkerConvert.RunWorkerAsync();
-
-                        // set flag for button is convert
-                        buttonIsConvert = false;
                     }
                     else
                     {
                         // CANCEL ASYNC
                         backGroundWorkerConvert.CancelAsync();
-
-                        // set flag for button is convert
-                        buttonIsConvert = true;
+                        RawFileProcessor.ProcessIsRunning = false;
                     }
-
-
-                    /* OLD
-                    // convert all files
-
-                    // set the maximum for the progress bar
-                    ProgressBarConvert.Maximum = RawFileProcessor.rawFiles.Count;
-
-                    // convert each file in the raw file list
-                    int counter = 1;
-                    foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.rawFiles)
-                    {
-                        // convert
-                        rawFile.Convert();
-
-                        // rename file
-                        string oldName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + rawFile.Extension;
-                        string newName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + "." + RawFileProcessor.OutputFileType.ToString();
-                        File.Move(sourceFileName: oldName, destFileName: newName, overwrite: true);
-
-                        // set the progress bar and label by using the dispatcher property
-                        // change this into a backgourdworker process. "asynchronos coding" in new thread to avoid freezing.
-                        float progressFraction = (float)counter / RawFileProcessor.rawFiles.Count;
-                        double percentageRounded = Math.Round(progressFraction * 100, 2, MidpointRounding.AwayFromZero);
-                        _ = LabelConvertProgress.Dispatcher.Invoke(() => LabelConvertProgress.Content = $"Progress {percentageRounded}% {rawFile.Name}{rawFile.Extension}", DispatcherPriority.Background);
-                        _ = ProgressBarConvert.Dispatcher.Invoke(() => ProgressBarConvert.Value = counter, DispatcherPriority.Background);
-
-                        // set counter
-                        counter++;
-                    }
-                    */
-
-
                 }
             }
             else

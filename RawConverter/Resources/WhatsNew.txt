@@ -1,9 +1,6 @@
-What's new in this version?
+What's new in version 1.0.0?
 
-First release.
-
-Some features are not yet supported:
-- Changing the input file type from .orf to. raw.
-- Changing the output file type from .jpg to .png or .tiff
-- Adjusting the output file image properties specifying image quality and other attributes.
-- The user interface for some of those features might already be available. Keep in mind that those controls are not linked to further code behind.
+- New feature: Added a feature for changing the input file type from .orf to. raw.
+- New feature: Added a feature for changing the output file type from .jpg to .png or .tiff
+- New feature: Added a feature for canceling the converting process
+- New feature: Converting process switched to background process to prevent application main window from freezing

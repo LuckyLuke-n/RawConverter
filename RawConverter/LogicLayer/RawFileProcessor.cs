@@ -10,13 +10,14 @@ namespace RawConverter
     static class RawFileProcessor
     {
         // ATTRIBUTES
-        private static List<string> listInputFileTypes = Enum.GetNames(typeof(InputFileTypes)).ToList();
-        private static List<string> listOutputFileTypes = Enum.GetNames(typeof(OutputFileTypes)).ToList();
+        private static readonly List<string> listInputFileTypes = Enum.GetNames(typeof(InputFileTypes)).ToList();
+        private static readonly List<string> listOutputFileTypes = Enum.GetNames(typeof(OutputFileTypes)).ToList();
         public static DataTable dataTableFiles = new();
         /// <summary>
         /// Used in ButtonConvert_Clicked event. Necessary to loop through a list of objects of type RawFile in order to call the Convert() method.
         /// </summary>
         public static List<RawFile> rawFiles = new();
+
 
         // PROPERTIES
         public static string FilterString { get { return $"Raw files|*{UserSettings.Default.InputFileType}"; } } // for selected file type in browser file window
@@ -33,6 +34,10 @@ namespace RawConverter
         /// Get a list of raw file names including the file extension.
         /// </summary>
         public static List<string> RawFilesNames => GetRawFileNames();
+        /// <summary>
+        /// Property to set a flag if the converting process is running.
+        /// </summary>
+        public static bool ProcessIsRunning { get; set; } = false;
 
 
         /// <summary>

@@ -40,17 +40,17 @@
         <TabControl Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="10">
             <TabItem Header="What's new">
                 <Grid Background="#FFE5E5E5">
-                    <TextBox x:Name="TextBoxWhatsNew" Margin="0" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" />
+                    <TextBox x:Name="TextBoxWhatsNew" Margin="0" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" IsReadOnly="True" />
                 </Grid>
             </TabItem>
             <TabItem Header="Libraries">
                 <Grid Background="#FFE5E5E5">
-                    <TextBox x:Name="TextBoxLibraries" Margin="0" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" />
+                    <TextBox x:Name="TextBoxLibraries" Margin="0" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" IsReadOnly="True" />
                 </Grid>
             </TabItem>
             <TabItem Header="License">
                 <Grid Background="#FFE5E5E5">
-                    <TextBox x:Name="TextBoxLicense" Margin="0" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" />
+                    <TextBox x:Name="TextBoxLicense" Margin="0" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" IsReadOnly="True" />
                 </Grid>
             </TabItem>
         </TabControl>
