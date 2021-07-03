@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -25,6 +26,8 @@ namespace RawConverter
         // variables for async events in this class
         private BackgroundWorker backGroundWorkerConvert;
         private static bool buttonIsConvert = true;
+        TimeSpan timeRemaining;
+        bool abortToken = false;
 
         public MainWindow()
         {
@@ -221,8 +224,13 @@ namespace RawConverter
             // disable checkboxes
             SwitchCheckBoxState(isEnabled: false);
 
+            // variables for this method
+            long timeRemainingMS;
+            long totalTimeElapsed = 0;
+            long totalTime;
+
             // convert each file in the raw file list
-            double counter = 1;
+            int counter = 1;
             foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.rawFiles)
             {
                 // check if process was aborted by user
@@ -235,6 +243,11 @@ namespace RawConverter
                 }
                 else
                 {
+                    // new object of type stopwatch
+                    Stopwatch watch = new();
+                    // take the time for converting
+                    watch.Start();
+
                     // convert
                     rawFile.Convert();
 
@@ -243,16 +256,25 @@ namespace RawConverter
                     string newName = RawFileProcessor.OutputFolder + "\\" + rawFile.Name + "." + RawFileProcessor.OutputFileType.ToString();
                     File.Move(sourceFileName: oldName, destFileName: newName, overwrite: true);
 
+                    // current job percentage
+                    int percentProgress = (int)((double)counter / RawFileProcessor.rawFiles.Count * 100);
+
+                    // stop time for stopwatch
+                    watch.Stop();
+
+                    // total time elapsed
+                    totalTimeElapsed += watch.ElapsedMilliseconds;
+
+                    // calculate remaining time in every loop to get best value possible
+                    totalTime = (long)(Convert.ToDouble(100) / percentProgress * totalTimeElapsed);
+                    timeRemainingMS = totalTime - totalTimeElapsed;
+                    timeRemaining = TimeSpan.FromMilliseconds(timeRemainingMS);
+
                     // set counter
                     counter++;
 
-                    // current job percentage
-                    int percentProgress = (int)(counter / RawFileProcessor.rawFiles.Count * 100);
-
-                    //Thread.Sleep(100);
-
                     // report progress
-                    backGroundWorkerConvert.ReportProgress(percentProgress);
+                    backGroundWorkerConvert.ReportProgress(percentProgress, timeRemaining);
                 }
             }
         }
@@ -264,22 +286,9 @@ namespace RawConverter
         /// <param name="e"></param>
         private void Convert_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            /*
-            Dispatcher.Invoke(new Action(() =>
-            {
-                LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}%";
-                ProgressBarConvert.Value = e.ProgressPercentage;
-                LabelConvertProgress.UpdateLayout();
-                ProgressBarConvert.UpdateLayout();
-            }
-            ));
-            */
-
-            LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}%";
+            string timeString = string.Format("{0:#00}:{1:#00}:{2:#00}", timeRemaining.Hours, timeRemaining.Minutes, timeRemaining.Seconds);
+            LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}% with {timeString} remaining.";
             ProgressBarConvert.Value = e.ProgressPercentage;
-
-            //_ = LabelConvertProgress.Dispatcher.BeginInvoke(() => LabelConvertProgress.Content = $"Progress {e.ProgressPercentage}%", DispatcherPriority.Normal);
-            //_ = ProgressBarConvert.Dispatcher.BeginInvoke(() => ProgressBarConvert.Value = e.ProgressPercentage, DispatcherPriority.Normal);
         }
 
         /// <summary>
@@ -295,6 +304,17 @@ namespace RawConverter
 
             // reset is convert button flag and check boxes
             SwitchCheckBoxState(isEnabled: true);
+
+            // check if process was aborted
+            if (abortToken == true)
+            {
+                // process was aborted by user
+                LabelConvertProgress.Content = "Aborted";
+                ProgressBarConvert.Value = 100;
+
+                // reset token
+                abortToken = false;
+            }
         }
 
 
@@ -367,16 +387,17 @@ namespace RawConverter
                         };
                         backGroundWorkerConvert.DoWork += Convert_DoWork;
                         backGroundWorkerConvert.RunWorkerCompleted += Export_RunWorkerCompleted;
-                        //backGroundWorkerConvert.ProgressChanged += new ProgressChangedEventHandler(Convert_ProgressChanged);
                         backGroundWorkerConvert.ProgressChanged += Convert_ProgressChanged;
 
                         // run the background worker
+                        LabelConvertProgress.Content = "Initializing...";
                         backGroundWorkerConvert.RunWorkerAsync();
                     }
                     else
                     {
                         // CANCEL ASYNC
                         backGroundWorkerConvert.CancelAsync();
+                        abortToken = true;
                         RawFileProcessor.ProcessIsRunning = false;
                     }
                 }
