@@ -222,7 +222,7 @@ namespace RawConverter
             SwitchCheckBoxState(isEnabled: false);
 
             // convert each file in the raw file list
-            int counter = 1;
+            double counter = 1;
             foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.rawFiles)
             {
                 // check if process was aborted by user
@@ -247,9 +247,9 @@ namespace RawConverter
                     counter++;
 
                     // current job percentage
-                    int percentProgress = counter / RawFileProcessor.rawFiles.Count * 100;
+                    int percentProgress = (int)(counter / RawFileProcessor.rawFiles.Count * 100);
 
-                    Thread.Sleep(100);
+                    //Thread.Sleep(100);
 
                     // report progress
                     backGroundWorkerConvert.ReportProgress(percentProgress);
