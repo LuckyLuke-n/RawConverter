@@ -1,3 +1,8 @@
+What's new in version 1.0.1?
+- Bugfix: Fixed an issue preventing the preogress bar from updating properly.
+- Bugfix: Fixed an issue preventing the label above the progress bar from updating properly.
+
+
 What's new in version 1.0.0?
 
 - New feature: Added a feature for changing the input file type from .orf to. raw.
