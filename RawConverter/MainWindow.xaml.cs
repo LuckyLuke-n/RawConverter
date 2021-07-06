@@ -26,7 +26,7 @@ namespace RawConverter
         // variables for async events in this class
         private BackgroundWorker backGroundWorkerConvert;
         private static bool buttonIsConvert = true;
-        TimeSpan timeRemaining;
+        private TimeSpan timeRemaining;
         private bool abortToken = false;
 
         public MainWindow()
@@ -257,7 +257,8 @@ namespace RawConverter
                     File.Move(sourceFileName: oldName, destFileName: newName, overwrite: true);
 
                     // current job percentage
-                    int percentProgress = (int)((double)counter / RawFileProcessor.rawFiles.Count * 100);
+                    // this must be a double value in order to prevent the percentage being 0 in case file count is >100
+                    double percentProgress = (double)counter / RawFileProcessor.rawFiles.Count * 100;
 
                     // stop time for stopwatch
                     watch.Stop();
@@ -270,11 +271,12 @@ namespace RawConverter
                     timeRemainingMS = totalTime - totalTimeElapsed;
                     timeRemaining = TimeSpan.FromMilliseconds(timeRemainingMS);
 
+
                     // set counter
                     counter++;
 
                     // report progress
-                    backGroundWorkerConvert.ReportProgress(percentProgress, timeRemaining);
+                    backGroundWorkerConvert.ReportProgress((int)percentProgress, timeRemaining);
                 }
             }
         }
