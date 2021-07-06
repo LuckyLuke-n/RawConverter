@@ -27,7 +27,7 @@ namespace RawConverter
         private BackgroundWorker backGroundWorkerConvert;
         private static bool buttonIsConvert = true;
         TimeSpan timeRemaining;
-        bool abortToken = false;
+        private bool abortToken = false;
 
         public MainWindow()
         {
@@ -361,9 +361,11 @@ namespace RawConverter
         {
             if (RawFileProcessor.OutputFolder != null & RawFileProcessor.OutputFolder != "")
             {
+                // folder for output is selected
                 if (RawFileProcessor.dataTableFiles.Rows.Count == 0)
                 {
                     // data table is empty
+                    // no raw files staged for converting
                     string caption = AboutThisApp.name;
                     string messageBoxText = "No images loaded.";
                     _ = MessageBox.Show(messageBoxText, caption, MessageBoxButton.OK, MessageBoxImage.Information);
@@ -404,6 +406,7 @@ namespace RawConverter
             }
             else
             {
+                // error message for missing destination folder
                 string caption = AboutThisApp.name;
                 string messageBoxText = "Please select a destination folder.";
                 _ = MessageBox.Show(messageBoxText, caption, MessageBoxButton.OK, MessageBoxImage.Information);
