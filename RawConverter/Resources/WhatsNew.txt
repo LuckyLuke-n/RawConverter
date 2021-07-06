@@ -1,5 +1,8 @@
+What's new in version 1.0.2?
+- Bugfix: Fixed an issue causing the conversion prgress to be aborted in case the total file count is higher than 100
+
 What's new in version 1.0.1?
-- Bugfix: Fixed an issue preventing the preogress bar from updating properly.
+- Bugfix: Fixed an issue preventing the progress bar from updating properly.
 - Bugfix: Fixed an issue preventing the label above the progress bar from updating properly.
 
 
