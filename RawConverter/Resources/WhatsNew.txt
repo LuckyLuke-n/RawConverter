@@ -1,3 +1,6 @@
+What' new in version 1.0.3?
+- General: Target framework upgraded to .NET 6.0
+
 What's new in version 1.0.2?
 - Bugfix: Fixed an issue causing the conversion prgress to be aborted in case the total file count is higher than 100
 
@@ -7,7 +10,6 @@ What's new in version 1.0.1?
 
 
 What's new in version 1.0.0?
-
 - New feature: Added a feature for changing the input file type from .orf to. raw.
 - New feature: Added a feature for changing the output file type from .jpg to .png or .tiff
 - New feature: Added a feature for canceling the converting process
