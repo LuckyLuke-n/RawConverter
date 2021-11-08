@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using ImageMagick;
 
 namespace RawConverter
@@ -16,7 +18,7 @@ namespace RawConverter
         /// <summary>
         /// Used in ButtonConvert_Clicked event. Necessary to loop through a list of objects of type RawFile in order to call the Convert() method.
         /// </summary>
-        public static List<RawFile> rawFiles = new();
+        public static ObservableCollection<RawFile> rawFiles { get; set; } = new();
 
 
         // PROPERTIES
@@ -145,9 +147,11 @@ namespace RawConverter
             {
                 RawFile rawFile = new(path);
 
+                /*
                 // add raw file properties to data table
                 object[] values = { $"{rawFile.Name}{rawFile.Extension}", $"{ rawFile.FileSize } MB" , rawFile.CreationTime };
                 dataTableFiles.Rows.Add(values);
+                */
 
                 // add raw file object to list
                 rawFiles.Add(rawFile);
@@ -160,6 +164,8 @@ namespace RawConverter
         /// <param name="filesToRemove"></param>
         public static void RemoveFiles(List<int> indicesToRemove)
         {
+            MessageBox.Show("RemoveFiles code block is commented out.");
+            /*
             // list recessary to handle the data
             List<DataRow> rowsToDelete = new();
             List<RawFile> itemsToKeep = new();
@@ -173,6 +179,7 @@ namespace RawConverter
                     // item is in the delete query
                     // add the item to the "to-be-deleted-list"
                     rowsToDelete.Add(row);
+                    //dataTableFiles.Rows.Remove(row);
                 }
                 else
                 {
@@ -192,6 +199,7 @@ namespace RawConverter
 
             // point the rawFiles list to the new itemsToKeep list containing only the file designated to be kept
             rawFiles = itemsToKeep;
+            */
         }
 
         /// <summary>

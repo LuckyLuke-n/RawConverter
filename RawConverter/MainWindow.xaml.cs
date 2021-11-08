@@ -33,6 +33,7 @@ namespace RawConverter
         {
             InitializeComponent();
             ResizeMenuColum(width: defaultMenuWidth);
+            DataGridFiles.DataContext = RawFileProcessor.rawFiles;
             SetAppInfo();
             SetCheckboxes();
 
@@ -137,6 +138,7 @@ namespace RawConverter
         /// </summary>
         private void RefreshDataGrid()
         {
+            /*
             // set source
             DataGridFiles.ItemsSource = RawFileProcessor.dataTableFiles.DefaultView;
 
@@ -148,6 +150,7 @@ namespace RawConverter
                 column.Width = columnWidths[counter];
                 counter++;
             }       
+            */
         }
 
         /// <summary>
@@ -364,7 +367,7 @@ namespace RawConverter
             if (RawFileProcessor.OutputFolder != null & RawFileProcessor.OutputFolder != "")
             {
                 // folder for output is selected
-                if (RawFileProcessor.dataTableFiles.Rows.Count == 0)
+                if (RawFileProcessor.rawFiles.Count == 0)
                 {
                     // data table is empty
                     // no raw files staged for converting
@@ -452,6 +455,7 @@ namespace RawConverter
         /// <param name="e"></param>
         private void MenuItemRemovedSelected_Click(object sender, RoutedEventArgs e)
         {
+            /*
             // get selected items
             IList selectedItems = DataGridFiles.SelectedItems;
 
@@ -467,6 +471,13 @@ namespace RawConverter
             // remove the files and update the gui
             RawFileProcessor.RemoveFiles(selectedIndices);
             RefreshDataGrid();
+            */
+
+            foreach (DataRowView row in DataGridFiles.SelectedItems)
+            {
+                //row.Delete();
+                row.Row.Delete();
+            }
         }
 
         /// <summary>
