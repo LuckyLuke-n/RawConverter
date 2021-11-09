@@ -1,3 +1,6 @@
+Whta's new in version 1.x.y?
+- Bugfix: Fixed an issue causing a wrong file extension in the file name after converting from raw format
+
 What' new in version 1.0.3?
 - General: Target framework upgraded to .NET 6.0
 
