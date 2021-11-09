@@ -33,7 +33,7 @@ namespace RawConverter
         {
             InitializeComponent();
             ResizeMenuColum(width: defaultMenuWidth);
-            DataGridFiles.DataContext = RawFileProcessor.rawFiles;
+            DataGridFiles.DataContext = RawFileProcessor.RawFiles;
             SetAppInfo();
             SetCheckboxes();
 
@@ -169,7 +169,6 @@ namespace RawConverter
                 {
                     // set input files property in RawFileReader class
                     RawFileProcessor.AddFiles(openFileDialog.FileNames);
-                    RefreshDataGrid();
                 }
             }
         }
@@ -234,7 +233,7 @@ namespace RawConverter
 
             // convert each file in the raw file list
             int counter = 1;
-            foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.rawFiles)
+            foreach (RawFileProcessor.RawFile rawFile in RawFileProcessor.RawFiles)
             {
                 // check if process was aborted by user
                 if (backGroundWorkerConvert.CancellationPending == true)
@@ -261,7 +260,7 @@ namespace RawConverter
 
                     // current job percentage
                     // this must be a double value in order to prevent the percentage being 0 in case file count is >100
-                    double percentProgress = (double)counter / RawFileProcessor.rawFiles.Count * 100;
+                    double percentProgress = (double)counter / RawFileProcessor.RawFiles.Count * 100;
 
                     // stop time for stopwatch
                     watch.Stop();
@@ -367,7 +366,7 @@ namespace RawConverter
             if (RawFileProcessor.OutputFolder != null & RawFileProcessor.OutputFolder != "")
             {
                 // folder for output is selected
-                if (RawFileProcessor.rawFiles.Count == 0)
+                if (RawFileProcessor.RawFiles.Count == 0)
                 {
                     // data table is empty
                     // no raw files staged for converting
@@ -454,30 +453,21 @@ namespace RawConverter
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MenuItemRemovedSelected_Click(object sender, RoutedEventArgs e)
-        {
-            /*
+        {  
             // get selected items
             IList selectedItems = DataGridFiles.SelectedItems;
-
+      
             // extract the indices
             List<int> selectedIndices = new();
-            foreach (DataRowView item in selectedItems)
+            foreach (RawFileProcessor.RawFile rawFile in selectedItems)
             {
                 // add the index to the list
-                int index = RawFileProcessor.RawFilesNames.IndexOf(item.Row["Name"].ToString());
+                int index = RawFileProcessor.RawFiles.IndexOf(rawFile);
                 selectedIndices.Add(index);
             }
-
+            
             // remove the files and update the gui
-            RawFileProcessor.RemoveFiles(selectedIndices);
-            RefreshDataGrid();
-            */
-
-            foreach (DataRowView row in DataGridFiles.SelectedItems)
-            {
-                //row.Delete();
-                row.Row.Delete();
-            }
+            RawFileProcessor.RemoveFiles(selectedIndices);        
         }
 
         /// <summary>
@@ -488,7 +478,6 @@ namespace RawConverter
         private void MenuItemClearAll_Click(object sender, RoutedEventArgs e)
         {
             RawFileProcessor.RemoveAllFiles();
-            RefreshDataGrid();
         }
 
         /// <summary>

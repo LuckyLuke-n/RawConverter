@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -14,14 +15,12 @@ namespace RawConverter
         // ATTRIBUTES
         private static readonly List<string> listInputFileTypes = Enum.GetNames(typeof(InputFileTypes)).ToList();
         private static readonly List<string> listOutputFileTypes = Enum.GetNames(typeof(OutputFileTypes)).ToList();
-        public static DataTable dataTableFiles = new();
-        /// <summary>
-        /// Used in ButtonConvert_Clicked event. Necessary to loop through a list of objects of type RawFile in order to call the Convert() method.
-        /// </summary>
-        public static ObservableCollection<RawFile> rawFiles { get; set; } = new();
-
 
         // PROPERTIES
+        /// <summary>
+        /// List of raw files to be processed later on.
+        /// </summary>
+        public static ObservableCollection<RawFile> RawFiles { get; set; } = new();
         public static string FilterString { get { return $"Raw files|*{UserSettings.Default.InputFileType}"; } } // for selected file type in browser file window
         public static string OutputFolder { get; set; }
         /// <summary>
@@ -59,12 +58,12 @@ namespace RawConverter
             public DateTime CreationTime { get; }
             public double FileSize { get; }
             public InputFileTypes FileType {get; set;}
+            public string FullName { get; private set; }
 
             // variables
             public readonly string path;
             //private readonly List<string> listFileTypes = Enum.GetNames(typeof(InputFileTypes)).ToList();
             private readonly FileInfo fileInfo;
-
 
             /// <summary>
             /// Creates a new RawFile object only reading the FileInfo.
@@ -78,6 +77,7 @@ namespace RawConverter
                 CreationTime = fileInfo.CreationTime;
                 FileSize = Math.Round((float)fileInfo.Length / 1000000, 3, MidpointRounding.AwayFromZero); // B to MB
                 FileType = (InputFileTypes)listInputFileTypes.IndexOf(UserSettings.Default.InputFileType);
+                FullName = Name + Extension;
             }
 
             /// <summary>
@@ -120,7 +120,7 @@ namespace RawConverter
         {
             List<string> rawFileNames = new();
 
-            foreach (RawFile rawFile in rawFiles)
+            foreach (RawFile rawFile in RawFiles)
             {
                 rawFileNames.Add(rawFile.Name + rawFile.Extension);
             }
@@ -134,27 +134,13 @@ namespace RawConverter
         /// /// <param name="filesToAdd"></param>
         public static void AddFiles(string[] filesToAdd)
         {
-            // intialize columns if necessary
-            if (dataTableFiles.Columns.Count == 0)
-            {
-                dataTableFiles.Columns.Add("Name", typeof(string));
-                dataTableFiles.Columns.Add("Size", typeof(string));
-                dataTableFiles.Columns.Add("Date created", typeof(DateTime));
-            }
-
             // add rows to data table and list
             foreach (string path in filesToAdd)
             {
                 RawFile rawFile = new(path);
 
-                /*
-                // add raw file properties to data table
-                object[] values = { $"{rawFile.Name}{rawFile.Extension}", $"{ rawFile.FileSize } MB" , rawFile.CreationTime };
-                dataTableFiles.Rows.Add(values);
-                */
-
                 // add raw file object to list
-                rawFiles.Add(rawFile);
+                RawFiles.Add(rawFile);
             }
         }
 
@@ -164,42 +150,14 @@ namespace RawConverter
         /// <param name="filesToRemove"></param>
         public static void RemoveFiles(List<int> indicesToRemove)
         {
-            MessageBox.Show("RemoveFiles code block is commented out.");
-            /*
-            // list recessary to handle the data
-            List<DataRow> rowsToDelete = new();
-            List<RawFile> itemsToKeep = new();
+            // sort the index list ascending than reverse it in order to iterate through the list and delete items from behind
+            indicesToRemove.Sort();
+            indicesToRemove.Reverse();
 
-            // check if row needs to be deleted
-            int id = 0;
-            foreach (DataRow row in dataTableFiles.Rows)
+            foreach (int index in indicesToRemove)
             {
-                if (indicesToRemove.Contains(id) == true)
-                {
-                    // item is in the delete query
-                    // add the item to the "to-be-deleted-list"
-                    rowsToDelete.Add(row);
-                    //dataTableFiles.Rows.Remove(row);
-                }
-                else
-                {
-                    // this row is to be kept
-                    // add the corresponding RawFile object to the "to-be-kept-list". This list will replate the current rawFiles-attribute
-                    itemsToKeep.Add(rawFiles[id]);
-                }
-
-                id++; // set the counter
+                RawFiles.RemoveAt(index);
             }
-
-            // delete the rows from the data table
-            foreach (DataRow row in rowsToDelete)
-            {
-                dataTableFiles.Rows.Remove(row);
-            }
-
-            // point the rawFiles list to the new itemsToKeep list containing only the file designated to be kept
-            rawFiles = itemsToKeep;
-            */
         }
 
         /// <summary>
@@ -208,35 +166,7 @@ namespace RawConverter
         public static void RemoveAllFiles()
         {
             // clear list
-            rawFiles.Clear();
-
-            int i = 0;
-            //Remove All
-            while (i < dataTableFiles.Rows.Count)
-            {
-                DataRow currentRow = dataTableFiles.Rows[i];
-                if (currentRow.RowState != DataRowState.Deleted)
-                {
-                    currentRow.Delete();
-                }
-                else
-                {
-                    i++;
-                }
-            }
-            foreach (DataColumn column in dataTableFiles.Columns)
-            {
-                column.Dispose();
-            }
-
-
-            /*
-            // delete the rows from the data table
-            foreach (DataRow row in dataTableFiles.Rows)
-            {
-                dataTableFiles.Rows.Remove(row);
-            }
-            */
+            RawFiles.Clear();
         }
 
     }
