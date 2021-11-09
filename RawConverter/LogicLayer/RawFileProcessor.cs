@@ -26,11 +26,11 @@ namespace RawConverter
         /// <summary>
         /// Gets the output file type for converted images.
         /// </summary>
-        public static OutputFileTypes OutputFileType { get; private set; } = (OutputFileTypes)listOutputFileTypes.IndexOf(UserSettings.Default.OutputFileType);
+        public static OutputFileTypes OutputFileType => (OutputFileTypes)listOutputFileTypes.IndexOf(UserSettings.Default.OutputFileType);
         /// <summary>
         /// Gets the input file type for raw files.
         /// </summary>
-        public static InputFileTypes InputFileType { get; private set; } = (InputFileTypes)listInputFileTypes.IndexOf(UserSettings.Default.InputFileType);
+        public static InputFileTypes InputFileType => (InputFileTypes)listInputFileTypes.IndexOf(UserSettings.Default.InputFileType);
         /// <summary>
         /// Get a list of raw file names including the file extension.
         /// </summary>

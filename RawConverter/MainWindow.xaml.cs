@@ -134,26 +134,6 @@ namespace RawConverter
         }
 
         /// <summary>
-        /// Method to refresh the data grid with all selected files
-        /// </summary>
-        private void RefreshDataGrid()
-        {
-            /*
-            // set source
-            DataGridFiles.ItemsSource = RawFileProcessor.dataTableFiles.DefaultView;
-
-            // set column widths
-            DataGridLength[] columnWidths = { new DataGridLength(3, DataGridLengthUnitType.Star), new DataGridLength(1, DataGridLengthUnitType.Auto), new DataGridLength(1, DataGridLengthUnitType.Auto) };
-            int counter = 0;
-            foreach (DataGridColumn column in DataGridFiles.Columns)
-            {
-                column.Width = columnWidths[counter];
-                counter++;
-            }       
-            */
-        }
-
-        /// <summary>
         /// Method to call the open file dialog to select images.
         /// </summary>
         private void AddFiles()
