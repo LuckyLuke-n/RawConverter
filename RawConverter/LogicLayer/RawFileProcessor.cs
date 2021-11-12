@@ -32,10 +32,6 @@ namespace RawConverter
         /// </summary>
         public static InputFileTypes InputFileType => (InputFileTypes)listInputFileTypes.IndexOf(UserSettings.Default.InputFileType);
         /// <summary>
-        /// Get a list of raw file names including the file extension.
-        /// </summary>
-        public static List<string> RawFilesNames => GetRawFileNames();
-        /// <summary>
         /// Property to set a flag if the converting process is running.
         /// </summary>
         public static bool ProcessIsRunning { get; set; } = false;

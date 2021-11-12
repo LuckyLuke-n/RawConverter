@@ -1,4 +1,4 @@
-Whta's new in version 1.x.y?
+Whta's new in version 1.0.4?
 - Bugfix: Fixed an issue causing a wrong file extension in the file name after converting from raw format
 
 What' new in version 1.0.3?
