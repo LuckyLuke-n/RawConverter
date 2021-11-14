@@ -1,15 +1,18 @@
-Whta's new in version 1.0.4?
-- Bugfix: Fixed an issue causing a wrong file extension in the file name after converting from raw format
+What's new in version 1.x.y?
+- Bug fix: Fixed an issue casuing the image in the menu button to disappear while the mouse is over the button
+
+What's new in version 1.0.4?
+- Bug fix: Fixed an issue causing a wrong file extension in the file name after converting from raw format
 
 What' new in version 1.0.3?
 - General: Target framework upgraded to .NET 6.0
 
 What's new in version 1.0.2?
-- Bugfix: Fixed an issue causing the conversion prgress to be aborted in case the total file count is higher than 100
+- Bug fix: Fixed an issue causing the conversion prgress to be aborted in case the total file count is higher than 100
 
 What's new in version 1.0.1?
-- Bugfix: Fixed an issue preventing the progress bar from updating properly.
-- Bugfix: Fixed an issue preventing the label above the progress bar from updating properly.
+- Bug fix: Fixed an issue preventing the progress bar from updating properly.
+- Bug fix: Fixed an issue preventing the label above the progress bar from updating properly.
 
 
 What's new in version 1.0.0?

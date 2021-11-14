@@ -33,11 +33,11 @@
         <!--- ######################################################################################################################### -->
 
         <!-- Menu Button -->
-        <Button x:Name="ButtonMenu" Margin="10" Grid.Column="0" Grid.Row="0" Height="50" Width="50"  HorizontalAlignment="Right" VerticalAlignment="Top"
+        <Button x:Name="ButtonMenu" Margin="10" Grid.Column="0" Grid.Row="0"
+                Height="50" Width="50" HorizontalAlignment="Right" VerticalAlignment="Top"
+                Background="DimGray"
                 Click="ButtonMenu_Click">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/menu.png"/>
-            </Button.Background>
+            <Image Source="pack://siteoforigin:,,,/Resources/menu.png" />
         </Button>
 
         <!-- Stack panel for settings controls -->
